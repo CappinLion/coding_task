@@ -1,0 +1,43 @@
+[TYPECHECK]
+generated-members=resources
+
+[BASIC]
+good-names=i,j,k,v,e,ex,_,f,s,df,f1,x,ax,im,t,p,N_FOLDS,N_MAX_EVALS,FOLDS,BOOST,STOPPING,N_BOOST,N_STOPPING,MAX_EVALS,X,y,input_path,output_directory,ns
+good-names-rgxs=X_[a-zA-Z_]+
+
+[FORMAT]
+; max-line-length=88
+max-statements=70
+
+[SIMILARITIES]
+min-similarity-lines=35
+ignore-comments=yes
+ignore-docstrings=yes
+ignore-imports=no
+
+[DESIGN]
+max-args=15
+max-locals=35
+max-attributes=15
+
+[MESSAGES CONTROL]
+disable=
+    fixme,
+    unused-variable,
+    redefined-outer-name,
+    cell-var-from-loop,
+    no-name-in-module,
+    too-few-public-methods,
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    logging-fstring-interpolation,
+    unspecified-encoding,
+    import-error,
+    C0103, W1202, W0201,
+    line-too-long,
+    wrong-import-position,
+    duplicate-code
+
+[REPORTS]
+reports=yes
