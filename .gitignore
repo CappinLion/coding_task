@@ -3,6 +3,8 @@
 # Data
 data/
 
+*.pyc
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
