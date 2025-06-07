@@ -54,7 +54,7 @@ def run(cfg: DictConfig, logger: logging.Logger = default_logger) -> None:
     logger.info(f"Test R_squared: {r2:.4f}")
 
     # Feature importance
-    feat_imp = get_feat_importance(model=best_model, df=df)
+    feat_imp = get_feat_importance(model=best_model, df=X_train_clean)
     logger.info("======= Top 10 Feature Importances =======")
     for name, imp in feat_imp[:10]:
         logger.info(f"{name}: {imp:.4f}")
