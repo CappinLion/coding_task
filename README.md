@@ -57,3 +57,29 @@ Below is the core `Pipeline` structure:
 - As expected, the feature with the highest importance is `factor` with a value of almost 0.2
 
 ![Feature Importances](data/feat_imp.png)
+
+### Logs
+```
+[2025-06-07 23:56:06,849][run_script][INFO] - Reading data...
+[2025-06-07 23:56:15,079][run_script][INFO] - Data loaded successfully.
+[2025-06-07 23:56:15,161][run_script][INFO] - Training begins...
+[2025-06-07 23:56:15,161][run_script][INFO] - Using estimator: XGBoost
+[2025-06-07 23:56:37,050][run_script][INFO] - Best CV score (neg_root_mean_squared_error): 12.46
+[2025-06-07 23:56:37,050][run_script][INFO] - Running inference on test set...
+[2025-06-07 23:56:37,081][run_script][INFO] - Inference completed.
+[2025-06-07 23:56:37,081][run_script][INFO] - ======= Test Set Evaluation =======
+[2025-06-07 23:56:37,082][run_script][INFO] - Test RMSE: 12.43
+[2025-06-07 23:56:37,082][run_script][INFO] - Test R_squared: 0.9826
+[2025-06-07 23:56:37,082][run_script][INFO] - ======= Top 10 Feature Importances =======
+[2025-06-07 23:56:37,082][run_script][INFO] - factor: 0.1977
+[2025-06-07 23:56:37,082][run_script][INFO] - FRA_2: 0.0582
+[2025-06-07 23:56:37,082][run_script][INFO] - IND_3: 0.0393
+[2025-06-07 23:56:37,083][run_script][INFO] - GER_1: 0.0385
+[2025-06-07 23:56:37,083][run_script][INFO] - FRA_1: 0.0200
+[2025-06-07 23:56:37,083][run_script][INFO] - AUS_2: 0.0188
+[2025-06-07 23:56:37,083][run_script][INFO] - GER_2: 0.0055
+[2025-06-07 23:56:37,083][run_script][INFO] - JAP_1: 0.0040
+[2025-06-07 23:56:37,083][run_script][INFO] - GER_3: 0.0034
+[2025-06-07 23:56:37,083][run_script][INFO] - UK_2: 0.0033
+[2025-06-07 23:56:37,084][run_script][INFO] - The whole training and inference took: 30.23 seconds.
+```

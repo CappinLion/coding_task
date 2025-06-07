@@ -61,8 +61,8 @@ def run(cfg: DictConfig, logger: logging.Logger = default_logger) -> None:
 
 
 if __name__ == "__main__":
-    logger = get_logger(name="run_script", level=logging.INFO)
     cfg = OmegaConf.load("./conf/config.yaml")
+    logger = get_logger(name="run_script", level=logging.INFO, logfile=cfg.paths.logging_path)
     start_time = time.time()
     run(cfg, logger=logger)
     diff = time.time() - start_time

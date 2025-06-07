@@ -2,8 +2,8 @@
 
 # Data
 *.xlsx
-
 *.pyc
+*.log
 
 # Unit test / coverage reports
 htmlcov/

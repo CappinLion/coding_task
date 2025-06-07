@@ -4,6 +4,7 @@ paths:
   model_dir:   "out/models"
   model_path:  "out/models/best_model.pkl"
   output_path: "out/predictions.parquet"
+  logging_path: "logs/run.log"
 
 data:
   countries: ["AUS","CAN","GER","FRA","IND","JAP","USA","UK"]
