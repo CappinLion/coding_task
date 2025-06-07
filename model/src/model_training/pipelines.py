@@ -1,3 +1,4 @@
+import logging
 from typing import Dict
 
 import pandas as pd
@@ -10,6 +11,8 @@ from sklearn.pipeline import Pipeline
 from xgboost import XGBRegressor
 
 from model.src.data_preparation.preprocessing import build_preprocessing_pipeline
+
+default_logger = logging.getLogger(__name__)
 
 
 def create_predictor(cfg: DictConfig) -> BaseEstimator:

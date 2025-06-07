@@ -8,6 +8,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
+# pylint: disable=unused-argument
 class DemandScalingTransformer(BaseEstimator, TransformerMixin):
     """
     Custom transformer that applies country-specific scaling factors to the three
@@ -17,7 +18,12 @@ class DemandScalingTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, scaling_map=dict):
         self.scaling_map = scaling_map
 
-    def fit(self) -> "DemandScalingTransformer":
+    def fit(self, X: pd.DataFrame, y=None) -> "DemandScalingTransformer":
+        """No need for fitting, but signature must accept X and y."""
+        if not isinstance(X, pd.DataFrame):
+            raise ValueError("Input X must be a pandas DataFrame.")
+        if not isinstance(self.scaling_map, dict):
+            raise ValueError("scaling_map must be a dictionary mapping country codes to factors.")
         return self
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:

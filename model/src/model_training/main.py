@@ -31,6 +31,9 @@ def get_optimized_pipeline(
     best_params = cross_val_result.best_params_
     best_model = cross_val_result.best_estimator_
 
+    print("Training completed.")
+    print("=== Hyperparameter Search Results ===")
     print(f"Best parameters: {best_params}")
+    print(f"Best model: {best_model}")
 
     return cross_val_result, best_model
