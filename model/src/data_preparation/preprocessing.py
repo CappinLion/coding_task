@@ -12,7 +12,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 class DemandScalingTransformer(BaseEstimator, TransformerMixin):
     """
     Custom transformer that applies country-specific scaling factors to the three
-    processing centers for each country (e.g., 'GER_1', 'GER_2', 'GER_3').
+    processing centers for each country.
     """
 
     def __init__(self, scaling_map=dict):
@@ -31,7 +31,7 @@ class DemandScalingTransformer(BaseEstimator, TransformerMixin):
         Multiply each demand column "<CODE>_<i>" by its country-specific factor.
 
         Arguments:
-            X (pd.DataFrame): DataFrame containing demand columns (e.g. 'AUS_1', 'CAN_2', ...).
+            X (pd.DataFrame): DataFrame containing demand columns.
 
         Returns:
             pd.DataFrame: A copy of X with scaled demand columns.
@@ -49,7 +49,7 @@ def build_preprocessing_pipeline(scaling_map: Dict[str, float]) -> Pipeline:
     """
     Build a preprocessing pipeline that:
       - Scales each country's center columns by its factor, then standardizes them.
-      - Imputes and one-hot encodes the 'factor' column.
+      - Imputes and one-hot encodes the "factor" column.
 
     Arguments:
         scaling_map (Dict[str, float]): Mapping from 3-letter country code to scaling factor.
@@ -112,6 +112,8 @@ def load_data(data_path: str, scaling_path: str) -> Tuple[pd.DataFrame, Dict[str
     }
     scaling_map = {}
     for code, country in country_code_map.items():
-        scaling_map[code] = float(scaling.loc[scaling["Country"] == country, "Scaling Factor"])
+        match = scaling.loc[scaling["Country"] == country, "Scaling Factor"]
+        if not match.empty:
+            scaling_map[code] = float(match.values[0])
 
     return df, scaling_map

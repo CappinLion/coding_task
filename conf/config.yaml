@@ -6,7 +6,7 @@ paths:
   output_path: "out/predictions.parquet"
 
 data:
-  countries: ['AUS','CAN','GER','FRA','IND','JAP','USA','UK']
+  countries: ["AUS","CAN","GER","FRA","IND","JAP","USA","UK"]
   lower_quantile: 0.05
   upper_quantile: 0.95
 
@@ -14,21 +14,19 @@ model:
   estimator: "XGBoost"
   test_size: 0.2
   params:
-    estimator__n_estimators: [150, 300]
-    estimator__max_depth: [5, 6, 7]
-    estimator__eta: [0.01, 0.1, 0.2]
-    estimator__subsample: [0.75, 0.9, 1]
+    XGBoost:
+      estimator__n_estimators: [150, 300, 450]
+      estimator__max_depth: [3, 5, 10]
+      estimator__learning_rate: [0.01, 0.1, 0.2]
+      estimator__subsample: [0.75, 0.9, 1]
+    RandomForest:
+      estimator__n_estimators: [100, 200, 300]
+      estimator__max_depth: [3, 5, 10]
+    LightGBM:
+      estimator__n_estimators: [100, 200]
+      estimator__learning_rate: [0.05, 0.1]
   n_iter: 4
   cv_folds: 5
   target_col: "Sales"
   random_state: 42
   scoring: "neg_root_mean_squared_error"
-
-inference:
-  batch_size: 32
-
-evaluation:
-  metrics:
-    - rmse
-    - r2
-    - mae

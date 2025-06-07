@@ -10,18 +10,15 @@ def get_feat_importance(model: Pipeline, df: pd.DataFrame) -> List[Tuple[str, fl
 
     Arguments:
         model (Pipeline): A fitted sklearn Pipeline with steps:
-                          - 'preprocessor' (ColumnTransformer → numeric pipeline first)
-                          - 'estimator'   (has attribute `feature_importances_`)
-        df (pd.DataFrame): Original feature DataFrame before preprocessing,
-                           used to retrieve feature names.
+                          - "preprocessor"
+                          - "estimator"
+        df (pd.DataFrame): Original feature DataFrame before preprocessing
 
     Returns:
-        List[Tuple[str, float]]: Sorted list of (feature_name, importance) tuples
-                                 in descending order of importance.
+        List[Tuple[str, float]]: Sorted list of (feature_name, importance) tuples in descending order of importance.
     """
     importances = model.named_steps["estimator"].feature_importances_
     feature_names = list(df.columns)
 
-    # Combine names and importances, sort descending
-    feat_list: List[Tuple[str, float]] = sorted(zip(feature_names, importances), reverse=True)
+    feat_list = sorted(zip(feature_names, importances), key=lambda x: x[1], reverse=True)
     return feat_list

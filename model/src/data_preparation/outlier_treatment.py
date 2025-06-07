@@ -2,6 +2,10 @@ from typing import List, Optional
 
 import pandas as pd
 
+from model.src.utils.helpers import get_logger
+
+logger = get_logger("preprocessing.outlier_treatment")
+
 
 def treat_outliers(
     df: pd.DataFrame,
@@ -24,6 +28,7 @@ def treat_outliers(
     """
     df_out = df.copy()
     if cols is None:
+        logger.info("No specific columns provided, treating all numeric columns.")
         cols = df_out.select_dtypes(include="number").columns.tolist()
 
     lower_bounds = df_out[cols].quantile(lower_quantile)
@@ -33,5 +38,8 @@ def treat_outliers(
         lb = lower_bounds[col]
         ub = upper_bounds[col]
         df_out[col] = df_out[col].clip(lower=lb, upper=ub)
+    logger.info(
+        f"Outliers succesfully treated: {len(cols)} columns clipped to [{lower_quantile}, {upper_quantile}] quantiles."
+    )
 
     return df_out

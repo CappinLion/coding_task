@@ -37,10 +37,11 @@ def run(cfg: DictConfig, logger: logging.Logger = default_logger) -> None:
 
     # Training
     logger.info("Training begins...")
+    logger.info(f"Using estimator: {cfg.model.estimator}")
     best_pipeline, best_model = get_optimized_pipeline(
         cfg=cfg, scaling_map=scaling_map, X=X_train_clean, y=y_train
     )
-    logger.info(f"Best CV RMSE:  {-best_pipeline.best_score_:.2f}")
+    logger.info(f"Best CV score ({cfg.model.scoring}): {-best_pipeline.best_score_:.2f}")
 
     # Inference on TEST
     logger.info("Running inference on test set...")
@@ -48,15 +49,15 @@ def run(cfg: DictConfig, logger: logging.Logger = default_logger) -> None:
     rmse = root_mean_squared_error(y_test, y_pred)
     r2 = r2_score(y_test, y_pred)
     logger.info("Inference completed.")
-    print("=== Test Set Evaluation ===")
-    print(f"Test RMSE: {rmse:.2f}")
-    print(f"Test R_squared:   {r2:.4f}")
+    logger.info("======= Test Set Evaluation =======")
+    logger.info(f"Test RMSE: {rmse:.2f}")
+    logger.info(f"Test R_squared: {r2:.4f}")
 
     # Feature importance
     feat_imp = get_feat_importance(model=best_model, df=df)
-    print("=== Top 10 Feature Importances ===")
+    logger.info("======= Top 10 Feature Importances =======")
     for name, imp in feat_imp[:10]:
-        print(f"  {name:<10s}: {imp:.4f}")
+        logger.info(f"{name}: {imp:.4f}")
 
 
 if __name__ == "__main__":

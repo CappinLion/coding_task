@@ -71,7 +71,7 @@ def get_logger(
 
     # Prevent adding multiple handlers if this is called repeatedly
     if not logger.handlers:
-        fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        fmt = "[%(asctime)s][%(name)s][%(levelname)s] - %(message)s"
         formatter = logging.Formatter(fmt)
 
         # Console handler

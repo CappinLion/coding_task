@@ -1,4 +1,3 @@
-import logging
 from typing import Dict
 
 import pandas as pd
@@ -11,8 +10,9 @@ from sklearn.pipeline import Pipeline
 from xgboost import XGBRegressor
 
 from model.src.data_preparation.preprocessing import build_preprocessing_pipeline
+from model.src.utils.helpers import get_logger
 
-default_logger = logging.getLogger(__name__)
+logger = get_logger("model_training")
 
 
 def create_predictor(cfg: DictConfig) -> BaseEstimator:
@@ -47,7 +47,7 @@ def make_full_pipeline(cfg: DictConfig, scaling_map: Dict[str, float]) -> Pipeli
         scaling_map (Dict[str, float]): Mapping from country code to scaling factor.
 
     Returns:
-        pipeline (Pipeline): scikit-learn Pipeline with 'preprocessor' and 'estimator' steps.
+        pipeline (Pipeline): sklearn Pipeline with "preprocessor" and "estimator" steps.
     """
     estimator = create_predictor(cfg)
     preprocessor = build_preprocessing_pipeline(scaling_map)
@@ -72,11 +72,22 @@ def opt_params(
         RandomizedSearchCV: Fitted RandomizedSearchCV object with best parameters.
     """
 
-    params_dict = {**{k: tuple(v) for k, v in dict(cfg.model.params).items()}}
+    estimator = cfg.model.estimator
+    param_space = dict(cfg.model.params[estimator])
+    params_dict = {**{k: tuple(v) for k, v in param_space.items()}}
+
+    estimator = pipe.named_steps["estimator"]
+    valid_keys = set(estimator.get_params().keys())
+    valid_keys_prefix = set(f"estimator__{k}" for k in valid_keys)
+
+    filtered = {k: v for k, v in params_dict.items() if k in valid_keys_prefix}
+    dropped = set(params_dict) - set(filtered)
+    if dropped:
+        logger.warning(f"Dropping params not supported by {type(estimator).__name__}: {dropped}")
 
     search = RandomizedSearchCV(
         estimator=pipe,
-        param_distributions=params_dict,
+        param_distributions=filtered,
         n_iter=cfg.model.n_iter,
         cv=cfg.model.cv_folds,
         scoring=cfg.model.scoring,
@@ -85,5 +96,9 @@ def opt_params(
         refit=True,
     )
 
+    logger.info(
+        f"Number of data points in training set: {len(X)}, number of features: {X.shape[1]}"
+    )
+    logger.info(f"Starting hyperparameter search with {cfg.model.n_iter} iterations...")
     search.fit(X, y)
     return search
