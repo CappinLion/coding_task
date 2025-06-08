@@ -12,6 +12,9 @@ data:
   upper_quantile: 0.95
 
 model:
+  mlflow:
+    enable: true
+    experiment_name: "Docstar Sales Forecasting"
   estimator: "XGBoost"
   test_size: 0.2
   params:

@@ -14,6 +14,7 @@ This repo contains an end-to-end demand forecasting pipeline for Catapult Inc's 
 - Command: `poetry run python scripts/run.py`
 - Modifications: change parameters in the `conf/config.yaml`
 - Unit Tests: `poetry run pytest`
+- Use mlflow for experiment tracking: set `cfg.model.mlflow.enable` to `true`
 
 The E2E Pipeline will:
 1. Load raw data and scaling factors
@@ -23,6 +24,7 @@ The E2E Pipeline will:
 5. Hyperparameter search using random search over the selected estimator
 6. Evaluate on the holdout set with RMSE and R_squared
 7. Display top feature importances
+8. Create a run within a mlflow experiment and log metrics and model hyperparameters
 
 ## Technical Summary
 
@@ -83,3 +85,10 @@ Below is the core `Pipeline` structure:
 [2025-06-07 23:56:37,083][run_script][INFO] - UK_2: 0.0033
 [2025-06-07 23:56:37,084][run_script][INFO] - The whole training and inference took: 30.23 seconds.
 ```
+
+### Mlflow
+- Run this command: `poetry run mlflow ui`
+- Open the localhost on port 5000
+
+![MlFlow Experiment](data/mlflow_experiment.png)
+![MlFlow Run](data/mlflow_run.png)

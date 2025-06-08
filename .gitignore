@@ -5,6 +5,10 @@
 *.pyc
 *.log
 
+# mlflow
+mlruns/
+out/
+
 # Unit test / coverage reports
 htmlcov/
 .tox/

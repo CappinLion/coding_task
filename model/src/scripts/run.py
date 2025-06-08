@@ -1,13 +1,14 @@
 import logging
 import time
 
+import mlflow
+import mlflow.sklearn
 from omegaconf import DictConfig, OmegaConf
-from sklearn.metrics import r2_score, root_mean_squared_error
 
 from model.src.data_preparation.outlier_treatment import treat_outliers
 from model.src.data_preparation.preprocessing import load_data
 from model.src.model_training.main import get_optimized_pipeline
-from model.src.postprocessing.main import get_feat_importance
+from model.src.postprocessing.main import evaluate_metrics, get_feat_importance
 from model.src.utils.helpers import get_logger, stratified_split
 
 default_logger = logging.getLogger(__name__)
@@ -41,23 +42,41 @@ def run(cfg: DictConfig, logger: logging.Logger = default_logger) -> None:
     best_pipeline, best_model = get_optimized_pipeline(
         cfg=cfg, scaling_map=scaling_map, X=X_train_clean, y=y_train
     )
-    logger.info(f"Best CV score ({cfg.model.scoring}): {-best_pipeline.best_score_:.2f}")
+    cv_rmse = -best_pipeline.best_score_
+    logger.info(f"Best CV score ({cfg.model.scoring}): {cv_rmse:.2f}")
 
     # Inference on TEST
     logger.info("Running inference on test set...")
     y_pred = best_model.predict(X_test)
-    rmse = root_mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
+    metrics = evaluate_metrics(y_test, y_pred)
     logger.info("Inference completed.")
     logger.info("======= Test Set Evaluation =======")
-    logger.info(f"Test RMSE: {rmse:.2f}")
-    logger.info(f"Test R_squared: {r2:.4f}")
+    for metric, value in metrics.items():
+        logger.info(f"TEST {metric}: {value:.4f}")
 
     # Feature importance
     feat_imp = get_feat_importance(model=best_model, df=X_train_clean)
     logger.info("======= Top 10 Feature Importances =======")
     for name, imp in feat_imp[:10]:
         logger.info(f"{name}: {imp:.4f}")
+
+    # Mlflow logging
+    if cfg.model.mlflow.enable:
+        mlflow.set_experiment(cfg.model.mlflow.experiment_name)
+
+        with mlflow.start_run(
+            run_name=f"{cfg.model.estimator}_run_{time.strftime('%Y%m%d_%H%M%S')}"
+        ):
+            mlflow.log_params(OmegaConf.to_container(cfg, resolve=True))
+            mlflow.log_params(best_pipeline.best_params_)
+            mlflow.log_metric("cv_rmse", cv_rmse)
+            for metric, val in metrics.items():
+                mlflow.log_metric(f"test_{metric}", val)
+            for name, imp in feat_imp:
+                mlflow.log_metric(f"feat_importance_{name}", imp)
+
+            mlflow.sklearn.log_model(best_model, "model")
+            logger.info("Model and metrics logged to MLflow.")
 
 
 if __name__ == "__main__":

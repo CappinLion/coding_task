@@ -19,8 +19,8 @@ def treat_outliers(
     Arguments:
         df (pd.DataFrame): Input DataFrame.
         cols (List[str], optional): Columns to treat. If None, all numeric columns are used.
-        lower_quantile (float): Lower quantile for clipping (e.g. 0.01 → 1st percentile).
-        upper_quantile (float): Upper quantile for clipping (e.g. 0.99 → 99th percentile).
+        lower_quantile (float): Lower quantile for clipping. Defaults to 0.01 (1st percentile).
+        upper_quantile (float): Upper quantile for clipping. Defaults to 0.99 (99th percentile).
 
     Returns:
         pd.DataFrame: A copy of `df` where each specified column has been clipped
